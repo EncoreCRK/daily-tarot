@@ -52,10 +52,10 @@ function paintFront(index, path) {
     .querySelector(".card-front-placeholder")
     .classList.toggle("hidden", !!(path || settings.default_front_path));
 }
-function fmtPacific(iso) {
+function fmtGMT3(iso) {
   if (!iso) return "";
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Los_Angeles",
+    timeZone: "Asia/Amman",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -95,7 +95,7 @@ function display(data, choice) {
   }
   const note = document.createElement("p");
   note.className = "hint";
-  note.textContent = `Next draw: ${fmtPacific( data.next_reset )} (Pacific time).`;
+  note.textContent = `Next draw: ${fmtGMT3(data.next_reset)} (GMT+3).`;
   el.append(note);
 }
 async function start() {
