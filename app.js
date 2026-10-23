@@ -1,107 +1,195 @@
+"use strict";
 const $ = (id) => document.getElementById(id);
-const buttons = [...document.querySelectorAll(".tarot-card")];
+const cards = [...document.querySelectorAll(".tarot-card")];
 const say = (s) => ($("notice").textContent = s);
 let db,
   browserId,
+  username = "",
+  settings = {},
   busy = false,
   finished = false;
-function getBrowserId() {
+function browserIdentifier() {
   let id = localStorage.getItem("daily_tarot_browser_id_v2");
-  if (
-    !id ||
-    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      id
-    )
-  ) {
+  if (!id || !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(id)) {
     id = crypto.randomUUID();
     localStorage.setItem("daily_tarot_browser_id_v2", id);
   }
   return id;
 }
-function imgUrl(path) {
+function imageUrl(path) {
   return path
     ? db.storage.from("tarot-rewards").getPublicUrl(path).data.publicUrl
     : "";
 }
-function display(data, chosen) {
-  finished = true;
-  buttons.forEach((b, i) => {
-    b.disabled = true;
-    if (i === chosen) b.classList.add("flipped");
-  });
-  const result = $("result");
-  result.replaceChildren();
-  const heading = document.createElement("h2");
-  heading.textContent = data.already_drawn
-    ? "Todayâ€™s reward"
-    : "Your reward!";
-  result.append(heading);
-  if (data.image_path) {
-    const img = document.createElement("img");
-    img.src = imgUrl(data.image_path);
-    img.alt = data.reward_name;
-    result.append(img);
+function setImage(img, path) {
+  if (path) {
+    img.src = imageUrl(path);
+    img.classList.remove("hidden");
+  } else {
+    img.removeAttribute("src");
+    img.classList.add("hidden");
   }
-  const reward = document.createElement("p");
-  reward.className = "reward";
-  reward.textContent = `${data.reward_name} â€” ${data.amount} Tarot ðŸ‚¡`;
-  result.append(reward);
+}
+function paintBacks() {
+  cards.forEach((card) =>
+    setImage(card.querySelector(".card-back-image"), settings.card_back_path)
+  );
+}
+function paintFront(index, path) {
+  const card = cards[index];
+  setImage(
+    card.querySelector(".card-front-image"),
+    path || settings.default_front_path
+  );
+  card
+    .querySelector(".card-front-placeholder")
+    .classList.toggle("hidden", !!(path || settings.default_front_path));
+}
+function fmtPacific(iso) {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZoneName: "short",
+  }).format(new Date(iso));
+}
+function display(data, choice) {
+  finished = true;
+  cards.forEach((b, i) => {
+    b.disabled = true;
+    if (i === choice) {
+      paintFront(i, data.front_path);
+      b.classList.add("flipped");
+    }
+  });
+  const el = $("result");
+  el.replaceChildren();
+  el.classList.remove("hidden");
+  const h = document.createElement("h2");
+  h.textContent = data.already_drawn
+    ? "Your saved daily reward"
+    : "Fortune revealed!";
+  el.append(h);
+  if (data.show_text !== false && data.reward_text) {
+    const p = document.createElement("p");
+    p.className = "reward-title";
+    p.textContent = data.reward_text;
+    el.append(p);
+  }
+  if (settings.show_amount !== false) {
+    const p = document.createElement("p");
+    p.className = "reward-amount";
+    p.textContent = `${data.amount} Tarot ðŸ‚¡`;
+    el.append(p);
+  }
   const note = document.createElement("p");
   note.className = "hint";
-  note.textContent = `Your next draw is after 00:00 UTC. Day: ${data.day}`;
-  result.append(note);
+  note.textContent = `Next draw: ${fmtPacific( data.next_reset )} (Pacific time).`;
+  el.append(note);
+}
+async function start() {
+  username = $("username").value.trim().toLowerCase();
+  if (!/^[a-z0-9_]{3,24}$/.test(username)) {
+    say("Username must contain 3-24 letters, numbers, or underscores.");
+    return;
+  }
+  localStorage.setItem("daily_tarot_username_v3", username);
+  $("identity-panel").classList.add("hidden");
+  $("game-panel").classList.remove("hidden");
+  $("welcome").textContent = `Welcome, ${username}`;
+  finished = false;
+  cards.forEach((b) => {
+    b.disabled = true;
+    b.classList.remove("flipped");
+  });
+  $("result").classList.add("hidden");
+  say("Checking your daily fortune...");
+  try {
+    const { data, error } = await db.rpc("daily_tarot_status", {
+      p_browser_id: browserId,
+      p_username: username,
+    });
+    if (error) throw error;
+    if (data.already_drawn) {
+      display(data, 1);
+      say("This username or browser has already drawn today.");
+    } else {
+      cards.forEach((b) => (b.disabled = false));
+      say("Choose one card!");
+    }
+  } catch (e) {
+    say("Unable to check your draw: " + e.message);
+  }
 }
 async function draw(i) {
   if (busy || finished) return;
   busy = true;
-  buttons.forEach((b) => (b.disabled = true));
-  say("The cards are revealing your fateâ€¦");
+  cards.forEach((b) => (b.disabled = true));
+  say("Revealing your fortune...");
   try {
     const { data, error } = await db.rpc("daily_tarot_draw", {
       p_browser_id: browserId,
+      p_username: username,
     });
     if (error) throw error;
     display(data, i);
     say(
       data.already_drawn
-        ? "You already drew today."
+        ? "A draw is already recorded for this username or browser."
         : "Your reward has been saved!"
     );
   } catch (e) {
-    say("Unable to draw: " + (e.message || "Try again."));
-    buttons.forEach((b) => (b.disabled = false));
+    say("Unable to draw: " + e.message);
+    cards.forEach((b) => (b.disabled = false));
   } finally {
     busy = false;
   }
 }
 async function init() {
-  buttons.forEach((b) => (b.disabled = true));
+  cards.forEach((b) => (b.disabled = true));
   try {
     const cfg = window.TAROT_CONFIG;
     if (
       !cfg ||
+      !cfg.supabaseUrl ||
       cfg.supabaseUrl.includes("YOUR-PROJECT") ||
+      !cfg.supabaseAnonKey ||
       cfg.supabaseAnonKey.includes("PASTE_")
     )
-      throw Error(
-        "First edit config.js with your Supabase URL and publishable key."
-      );
+      throw Error("Set your project URL and publishable key in config.js.");
     db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-    browserId = getBrowserId();
-    const { data, error } = await db.rpc("daily_tarot_status", {
-      p_browser_id: browserId,
-    });
+    browserId = browserIdentifier();
+    const { data, error } = await db.rpc("daily_tarot_public_settings");
     if (error) throw error;
-    if (data.already_drawn) {
-      display(data, -1);
-      say("You have already drawn today. Come back after the UTC reset!");
-    } else {
-      buttons.forEach((b) => (b.disabled = false));
-      say("Pick one card to reveal your reward!");
-    }
+    settings = data || {};
+    $("site-title").textContent = settings.site_title || "Daily Tarot";
+    $("subtitle").textContent = settings.subtitle || "";
+    $("instructions").textContent = settings.instructions || "Choose a card.";
+    paintBacks();
+    const saved = localStorage.getItem("daily_tarot_username_v3");
+    if (saved) $("username").value = saved;
+    say("Enter your community username to continue.");
   } catch (e) {
-    say("Setup or connection error: " + (e.message || "Unknown error"));
+    say("Setup error: " + e.message);
   }
 }
-buttons.forEach((b, i) => b.addEventListener("click", () => draw(i)));
+$("continue").addEventListener("click", start);
+$("username").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") start();
+});
+cards.forEach((b, i) => b.addEventListener("click", () => draw(i)));
+$("change-username").addEventListener("click", () => {
+  if (busy) return;
+  finished = false;
+  cards.forEach((b) => {
+    b.classList.remove("flipped");
+    b.disabled = true;
+  });
+  $("game-panel").classList.add("hidden");
+  $("identity-panel").classList.remove("hidden");
+  $("result").classList.add("hidden");
+  $("username").focus();
+  say("Changing the name does not reset the browser daily limit.");
+});
 init();
