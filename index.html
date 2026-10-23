@@ -1,6 +1,92 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071b32"><title>Daily Tarot</title><link rel="stylesheet" href="style.css"></head>
-<body><main class="shell"><header class="hero"><div class="eyebrow">✦ THE AZURE DECK ✦</div><h1 id="site-title">DAILY TAROT</h1><p id="subtitle">The tides of fate await.</p></header>
-<section class="panel enter-panel" id="identity-panel"><label for="username">Your community username</label><div class="inline"><input id="username" type="text" autocomplete="nickname" spellcheck="false" maxlength="24" placeholder="3-24 letters, numbers, underscores"><button id="continue" type="button">Continue</button></div><div id="intro-image-wrap" class="intro-image-wrap hidden"><img id="intro-image" class="intro-image hidden" alt="Community welcome artwork"></div><p class="hint">No account required. Your name and this browser's random identifier are saved for daily limits. This does not uniquely identify a physical device.</p></section>
-<section id="game-panel" class="hidden"><p class="welcome" id="welcome"></p><p class="lead" id="instructions">Choose one card to reveal your reward.</p><div class="cards" id="cards"><button class="tarot-card" type="button" aria-label="Pick card one"><span class="card-inner"><span class="card-face card-back"><img class="card-back-image hidden" alt=""><span class="card-placeholder">✦<small>I</small></span></span><span class="card-face card-front"><img class="card-front-image hidden" alt=""><span class="card-front-placeholder">✧</span></span></span></button><button class="tarot-card" type="button" aria-label="Pick card two"><span class="card-inner"><span class="card-face card-back"><img class="card-back-image hidden" alt=""><span class="card-placeholder">✦<small>II</small></span></span><span class="card-face card-front"><img class="card-front-image hidden" alt=""><span class="card-front-placeholder">✧</span></span></span></button><button class="tarot-card" type="button" aria-label="Pick card three"><span class="card-inner"><span class="card-face card-back"><img class="card-back-image hidden" alt=""><span class="card-placeholder">✦<small>III</small></span></span><span class="card-face card-front"><img class="card-front-image hidden" alt=""><span class="card-front-placeholder">✧</span></span></span></button></div><section id="result" class="result hidden" aria-live="polite"></section><p class="hint center">Resets daily at 12:00 AM GMT+3 (Jordan time).</p><button id="change-username" class="link-button" type="button">Change username</button></section>
-<p id="notice" class="notice" role="status"></p><div class="admin-link-wrap"><a class="admin-link" href="admin.html"><span aria-hidden="true">⚙</span> Admin Dashboard</a></div><footer>✦ An azure fortune, once per day ✦</footer></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="config.js"></script><script src="app.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#071b32">
+    <title>Daily Tarot</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="eyebrow">✦ THE AZURE DECK ✦</div>
+      <h1 id="site-title">DAILY TAROT</h1>
+      <p id="subtitle">The tides of fate await.</p>
+    </header>
+<section class="panel enter-panel" id="identity-panel">
+  <label for="username">Your community username</label>
+  <div class="inline">
+    <input id="username" type="text" autocomplete="nickname" spellcheck="false" maxlength="24" placeholder="3-24 letters, numbers, underscores">
+    <button id="continue" type="button">Continue</button>
+  </div>
+  <div id="intro-image-wrap" class="intro-image-wrap hidden">
+    <img id="intro-image" class="intro-image hidden" alt="Community welcome artwork">
+  </div>
+  <p class="hint">Just put your Encore Circle name / nickname.</p>
+</section>
+<section id="game-panel" class="hidden">
+  <p class="welcome" id="welcome"></p>
+  <p class="lead" id="instructions">Choose one card to reveal your reward.</p>
+  <div class="cards" id="cards">
+    <button class="tarot-card" type="button" aria-label="Pick card one">
+      <span class="card-inner">
+        <span class="card-face card-back">
+          <img class="card-back-image hidden" alt="">
+          <span class="card-placeholder">✦
+            <small>I</small>
+          </span>
+        </span>
+        <span class="card-face card-front">
+          <img class="card-front-image hidden" alt="">
+          <span class="card-front-placeholder">✧</span>
+        </span>
+      </span>
+    </button>
+    <button class="tarot-card" type="button" aria-label="Pick card two">
+      <span class="card-inner">
+        <span class="card-face card-back">
+          <img class="card-back-image hidden" alt="">
+          <span class="card-placeholder">✦
+            <small>II</small>
+          </span>
+        </span>
+        <span class="card-face card-front">
+          <img class="card-front-image hidden" alt="">
+          <span class="card-front-placeholder">✧</span>
+        </span>
+      </span>
+    </button>
+    <button class="tarot-card" type="button" aria-label="Pick card three">
+      <span class="card-inner">
+        <span class="card-face card-back">
+          <img class="card-back-image hidden" alt="">
+          <span class="card-placeholder">✦
+            <small>III</small>
+          </span>
+        </span>
+        <span class="card-face card-front">
+          <img class="card-front-image hidden" alt="">
+          <span class="card-front-placeholder">✧
+          </span>
+        </span>
+      </span>
+    </button>
+  </div>
+  <section id="result" class="result hidden" aria-live="polite"></section>
+  <p class="hint center">Resets daily at 12:00 AM Pacific Time.</p>
+  <button id="change-username" class="link-button" type="button">Change username</button>
+</section>
+<p id="notice" class="notice" role="status"></p>
+    <div class="admin-link-wrap">
+      <a class="admin-link" href="admin.html">
+        <span aria-hidden="true">⚙</span> Admin Dashboard
+      </a>
+    </div>
+    <footer>✦ An azure fortune, once per day ✦</footer>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
