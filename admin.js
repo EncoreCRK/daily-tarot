@@ -362,9 +362,9 @@ function renderRewards() {
   if (!archive.children.length)
     archive.append(el("p", "No archived rewards.", "hint"));
 }
-const pacific = (iso) =>
+const gmt3 = (iso) =>
   new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Los_Angeles",
+    timeZone: "Asia/Amman",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -421,7 +421,7 @@ function renderHistory() {
       d.browser_id || "(legacy)",
       d.reward_name,
       d.reward_amount,
-      pacific(d.created_at),
+      gmt3(d.created_at),
       utc(d.created_at),
       d.draw_day,
     ].forEach((value) => tr.append(el("td", String(value ?? ""))));
@@ -443,16 +443,16 @@ $("export-history").onclick = () => {
     "Browser ID",
     "Reward",
     "Tarot amount",
-    "Pacific timestamp",
+    "GMT+3 timestamp",
     "UTC timestamp",
-    "Pacific draw day",
+    "Stored draw day (legacy Pacific / new GMT+3)",
   ];
   const rows = draws.map((d) => [
     d.username || "",
     d.browser_id || "",
     d.reward_name,
     d.reward_amount,
-    pacific(d.created_at),
+    gmt3(d.created_at),
     utc(d.created_at),
     d.draw_day,
   ]);
