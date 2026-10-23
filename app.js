@@ -30,6 +30,13 @@ function setImage(img, path) {
     img.classList.add("hidden");
   }
 }
+function paintIntro() {
+  const img = $("intro-image");
+  if (!img) return;
+  const path = settings.intro_image_path;
+  setImage(img, path);
+  $("intro-image-wrap").classList.toggle("hidden", !path);
+}
 function paintBacks() {
   cards.forEach((card) =>
     setImage(card.querySelector(".card-back-image"), settings.card_back_path)
@@ -49,8 +56,11 @@ function fmtPacific(iso) {
   if (!iso) return "";
   return new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles",
-    dateStyle: "medium",
-    timeStyle: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
     timeZoneName: "short",
   }).format(new Date(iso));
 }
@@ -80,7 +90,7 @@ function display(data, choice) {
   if (settings.show_amount !== false) {
     const p = document.createElement("p");
     p.className = "reward-amount";
-    p.textContent = `${data.amount} Tarot ðŸ‚¡`;
+    p.textContent = `${data.amount}\u{1F0B1}`;
     el.append(p);
   }
   const note = document.createElement("p");
@@ -167,6 +177,7 @@ async function init() {
     $("subtitle").textContent = settings.subtitle || "";
     $("instructions").textContent = settings.instructions || "Choose a card.";
     paintBacks();
+    paintIntro();
     const saved = localStorage.getItem("daily_tarot_username_v3");
     if (saved) $("username").value = saved;
     say("Enter your community username to continue.");
