@@ -95,13 +95,13 @@ function display(data, choice) {
   }
   const note = document.createElement("p");
   note.className = "hint";
-  note.textContent = `Next draw: ${fmtGMT3(data.next_reset)} (GMT+3).`;
+  note.textContent = `Next draw: ${fmtGMT3(data.next_reset)}.`;
   el.append(note);
 }
 async function start() {
   username = $("username").value.trim().toLowerCase();
   if (!/^[a-z0-9_]{3,24}$/.test(username)) {
-    say("Username must contain 3-24 letters, numbers, or underscores.");
+    say("Username must contain 3-24 letters.");
     return;
   }
   localStorage.setItem("daily_tarot_username_v3", username);
