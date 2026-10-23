@@ -128,6 +128,7 @@ async function loadSettings() {
   $("show-amount-input").checked = data.show_amount;
   thumb($("back-preview"), data.card_back_path);
   thumb($("front-preview"), data.default_front_path);
+  thumb($("intro-preview"), data.intro_image_path);
 }
 async function saveSettings(patch) {
   try {
@@ -140,6 +141,8 @@ async function saveSettings(patch) {
       updated_at: new Date().toISOString(),
       ...patch,
     };
+    if ($("intro-file").files[0])
+      next.intro_image_path = await upload($("intro-file").files[0]);
     if ($("back-file").files[0])
       next.card_back_path = await upload($("back-file").files[0]);
     if ($("default-front-file").files[0])
@@ -148,6 +151,7 @@ async function saveSettings(patch) {
     if (error) throw error;
     $("back-file").value = "";
     $("default-front-file").value = "";
+    $("intro-file").value = "";
     msg("Appearance saved. Refresh the public website to see it.");
     await loadSettings();
   } catch (e) {
@@ -155,6 +159,10 @@ async function saveSettings(patch) {
   }
 }
 $("save-settings").onclick = () => saveSettings({});
+$("clear-intro").onclick = () => {
+  if (confirm("Remove the username welcome image?"))
+    saveSettings({ intro_image_path: null });
+};
 $("clear-back").onclick = () => {
   if (confirm("Remove the shared back image?"))
     saveSettings({ card_back_path: null });
@@ -357,15 +365,23 @@ function renderRewards() {
 const pacific = (iso) =>
   new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles",
-    dateStyle: "medium",
-    timeStyle: "medium",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
     timeZoneName: "short",
   }).format(new Date(iso));
 const utc = (iso) =>
   new Intl.DateTimeFormat("en-US", {
     timeZone: "UTC",
-    dateStyle: "medium",
-    timeStyle: "medium",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
     timeZoneName: "short",
   }).format(new Date(iso));
 async function loadHistory(reset = false) {
