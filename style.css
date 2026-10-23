@@ -431,3 +431,44 @@ footer a {
     font-size: 0.8rem;
   }
 }
+
+/* V3.1: welcome artwork and public admin link */
+.intro-image-wrap {
+  margin: 20px auto 12px;
+  text-align: center;
+  max-width: 100%;
+}
+.intro-image {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 310px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 0 32px #00a9ec28;
+}
+.admin-link-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 28px auto 12px;
+}
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid #58a6ce;
+  border-radius: 999px;
+  color: #d6f8ff;
+  text-decoration: none;
+  background: #103955;
+  box-shadow: 0 5px 18px #04101d55;
+}
+.admin-link:hover,
+.admin-link:focus-visible {
+  background: #176088;
+  color: white;
+  }
