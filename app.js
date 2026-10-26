@@ -23,9 +23,9 @@ function browserIdentifier() {
 
 // Validate community usernames and links.
 // Allows 3-50 characters, including URL punctuation.
-// Spaces, quotation marks, backslashes, and HTML brackets are excluded.
+
 function validUsername(value) {
-  return /^[^\s"'<>\\]{3,50}$/.test(value);
+  return value.length >= 3 && value.length <= 50;
 }
 
 // Get a public URL for an uploaded image.
@@ -145,11 +145,10 @@ async function start() {
 
   // God save me how many times did I edit this from 24 letters to 50...
   if (!validUsername(username)) {
-    say(
-      'Enter a username or link containing 3-50 characters. Spaces and quotation marks are not allowed.'
-    );
+    say('Please enter a community name containing 3-50 characters.');
     return;
   }
+
 
   // Keep identifier matching case-insensitive... (kill those insensitive people.)
   username = username.toLowerCase();
