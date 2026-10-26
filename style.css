@@ -292,3 +292,29 @@ footer a{color:#a8e7ff}
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(73, 220, 255, 0.28));
 }
+
+/* Small, centered reward image on the front of cards */
+.card-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Front PNG: centered symbol instead of full-card artwork */
+.card-front-image {
+  position: absolute;
+  width: 38% !important;
+  height: 38% !important;
+
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: translate(-50%, -50%);
+
+  object-fit: contain !important;
+
+  filter: drop-shadow(0 0 10px rgba(77, 223, 255, 0.65));
+}
