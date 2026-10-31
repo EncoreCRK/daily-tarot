@@ -304,8 +304,8 @@ footer a{color:#a8e7ff}
 /* Front PNG: centered symbol instead of full-card artwork */
 .card-front-image {
   position: absolute;
-  width: 60% !important;
-  height: 60% !important;
+  width: 70% !important;
+  height: 70% !important;
 
   top: 50% !important;
   left: 50% !important;
