@@ -255,12 +255,16 @@ footer a{color:#a8e7ff}
 }
 
 /* V3.1: welcome artwork and public admin link */
-.intro-image-wrap{margin:20px auto 12px;text-align:center;max-width:100%;}
+.intro-image-wrap{
+  margin:25px auto 17px;
+  text-align:center;
+  max-width:100%;
+}
 .intro-image{
   display:block;
   margin:0 auto;
   max-width:100%;
-  max-height:310px;
+  max-height:320px;
   width:auto;height:auto;
   object-fit:contain;
   border-radius:14px;
@@ -304,8 +308,8 @@ footer a{color:#a8e7ff}
 /* Front PNG: centered symbol instead of full-card artwork */
 .card-front-image {
   position: absolute;
-  width: 80% !important;
-  height: 80% !important;
+  width: 60% !important;
+  height: 60% !important;
 
   top: 50% !important;
   left: 50% !important;
